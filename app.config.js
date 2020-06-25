@@ -6,4 +6,5 @@ config.db = {
   url: "mongodb://127.0.0.1:27017/blogs",
 };
 config.apiVersion = "api/v1";
+config.baseurl = config.apiVersion + "/blogs";
 module.exports = config;

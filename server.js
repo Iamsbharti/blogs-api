@@ -9,7 +9,7 @@ app.get("/", (req, res) => {
 });
 
 //add middleware
-app.use("/blog", router);
+app.use(config.baseurl, router);
 
 //init db
 init.initdb();
