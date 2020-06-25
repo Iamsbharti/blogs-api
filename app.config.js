@@ -3,8 +3,8 @@ config.port = 3000;
 config.allowedCorsOrigin = "*";
 config.env = "dev";
 config.db = {
-  url: "mongodb://127.0.0.1:27017/blogs",
+  url: "mongodb://localhost:27017/?readPreference=primary&ssl=false/blogs",
 };
-config.apiVersion = "api/v1";
+config.apiVersion = "/api/v1";
 config.baseurl = config.apiVersion + "/blogs";
 module.exports = config;
