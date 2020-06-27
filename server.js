@@ -1,11 +1,13 @@
 const express = require("express");
-require("./models/Blog");
 const router = require("./routes/blogRoutes");
 const config = require("./app.config");
 const init = require("./initdb");
 const { baseurl } = require("./app.config");
+require("dotenv");
+const bodyParser = require("body-parser");
 
 const app = express();
+
 app.get("/", (req, res) => {
   res.send("welcome to blog API!!!");
 });
@@ -13,6 +15,7 @@ app.get("/", (req, res) => {
 //add middleware
 console.log(baseurl);
 app.use(config.baseurl, router);
+app.use(bodyParser.json());
 
 //init db
 init.initdb();

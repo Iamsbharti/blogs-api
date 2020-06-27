@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const Blogs = require("../models/Blog");
 
-exports.createBlog = function (req, res) {
+exports.createBlog = async (req, res) => {
   res.send("create blog", req.body);
 };
 exports.getAllBlogs = async (req, res) => {
