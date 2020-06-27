@@ -2,10 +2,11 @@ const express = require("express");
 const mongoose = require("mongoose");
 const { v4: uuidv4 } = require("uuid");
 const { formatRes } = require("../lib/formatResponse");
+const { now } = require("../lib/formatTime");
 const Blogs = require("../models/Blog");
 const EXCLUDE = "-__v -_id";
 exports.createBlog = function (req, res) {
-  console.log("create blog", req.body);
+  //console.log("create blog", req.body);
   const { title, description, bodyHtml, tags, author, category } = req.body;
   const newBlog = new Blogs({
     blogId: uuidv4(),
@@ -16,6 +17,7 @@ exports.createBlog = function (req, res) {
     tags: tags,
     author: author,
     category: category,
+    created: Date.now,
   });
 
   Blogs.create(newBlog, (error, newBlog) => {
@@ -27,12 +29,12 @@ exports.createBlog = function (req, res) {
   });
 };
 exports.getAllBlogs = (req, res) => {
-  console.log("req getall");
+  //console.log("req getall");
   const blogs = Blogs.find()
     .select(EXCLUDE)
     .lean()
     .exec((error, result) => {
-      console.log(error, result);
+      //console.log(error, result);
       error === null
         ? result.length === 0
           ? res.status(200).json(formatRes(false, "No Blogs Found", 200, null))
@@ -45,10 +47,10 @@ exports.getAllBlogs = (req, res) => {
     });
 };
 exports.viewBlogById = function (req, res) {
-  console.log("viewBlogById");
+  //console.log("viewBlogById");
   const blogId = req.params.blogId;
   computeResponse = (error, result) => {
-    console.log("call", error, result.length);
+    //console.log("call", error, result.length);
     error === null
       ? result.length === 0
         ? res
@@ -61,14 +63,14 @@ exports.viewBlogById = function (req, res) {
           .status(500)
           .json(formatRes(true, "Error fetching blog", 500, error));
   };
-  console.log("get blog for", blogId);
+  //console.log("get blog for", blogId);
   Blogs.find({ blogId: blogId }).select(EXCLUDE).lean().exec(computeResponse);
 };
 exports.viewByAuthor = function (req, res) {
-  console.log("view by author", req.params);
+  //console.log("view by author", req.params);
   const authorName = req.params.author;
   computeResponse = (error, result) => {
-    console.log("call", error, result);
+    //console.log("call", error, result);
     error === null
       ? result.length === 0
         ? res
@@ -81,18 +83,18 @@ exports.viewByAuthor = function (req, res) {
           .status(500)
           .json(formatRes(true, "Error fetching blog", 500, error));
   };
-  console.log("get blog for", authorName);
+  //console.log("get blog for", authorName);
   Blogs.find({ author: authorName })
     .select(EXCLUDE)
     .lean()
     .exec(computeResponse);
 };
 exports.viewByCategory = function (req, res) {
-  console.log("view by category", req.params);
+  //console.log("view by category", req.params);
   const categoryName = req.params.category;
-  console.log("Get blog for", categoryName);
+  //console.log("Get blog for", categoryName);
   computeResponse = (error, result) => {
-    console.log("call", error, result);
+    //console.log("call", error, result);
     error === null
       ? result.length === 0
         ? res
@@ -113,13 +115,13 @@ exports.viewByCategory = function (req, res) {
   Blogs.find({ category: categoryName }).select(EXCLUDE).exec(computeResponse);
 };
 exports.editBlog = function (req, res) {
-  console.log("edit blog", req.params);
+  //console.log("edit blog", req.params);
   const { blogId } = req.params;
-  console.log("edit ", blogId);
+  //console.log("edit ", blogId);
 
   const options = req.body;
   computeResponse = (error, { n }) => {
-    console.log("call--", error, n);
+    //console.log("call--", error, n);
     error === null
       ? n === 0
         ? res
@@ -137,13 +139,13 @@ exports.editBlog = function (req, res) {
   Blogs.updateOne(query, options, computeResponse);
 };
 exports.deleteBlog = function (req, res) {
-  console.log("delete blog", req.params);
+  //console.log("delete blog", req.params);
   const { blogId } = req.params;
-  console.log("delete", blogId);
+  //console.log("delete", blogId);
 
   //delete
   computeResponse = (error, { n }) => {
-    console.log("call", error, n);
+    //console.log("call", error, n);
     error === null
       ? n === 0
         ? res
@@ -159,13 +161,13 @@ exports.deleteBlog = function (req, res) {
   Blogs.deleteOne({ blogId: blogId }, computeResponse);
 };
 exports.incrementCount = function (req, res) {
-  console.log("count++", req.params);
+  //console.log("count++", req.params);
   const { blogId } = req.params;
-  console.log("increment view", blogId);
+  //console.log("increment view", blogId);
   let foundBlog;
   //increment view
   computeResponse = (error, { n }) => {
-    console.log("call", error, n);
+    //console.log("call", error, n);
     error === null
       ? res.status(200).json(
           formatRes(false, `${n} blog updated`, 200, {
@@ -178,7 +180,7 @@ exports.incrementCount = function (req, res) {
   };
   let query = { blogId: blogId };
   Blogs.findOne({ blogId: blogId }, (error, result) => {
-    console.log(error, result.blogId, result.views, typeof result.views);
+    //console.log(error, result.blogId, result.views, typeof result.views);
     foundBlog = result;
     error === null && result.blogId === blogId
       ? Blogs.updateOne(
