@@ -3,7 +3,8 @@ const router = express.Router();
 const config = require("../app.config");
 const blogController = require("../controllers/blogControllers");
 const { apiVersion } = require("../app.config");
-
+const { query } = require("express");
+const { checkQueryParameters } = require("../middlewares/nullCheck");
 //routes
 router.get("/all", blogController.getAllBlogs);
 /**
@@ -300,5 +301,7 @@ router.post("/:blogId/count/view", blogController.incrementCount);
       "data": null
     }
 */
-
+router.get("/query", checkQueryParameters, (req, res) => {
+  console.log("router", req.query);
+});
 module.exports = router;
