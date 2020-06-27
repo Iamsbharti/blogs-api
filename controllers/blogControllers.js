@@ -20,7 +20,7 @@ exports.createBlog = function (req, res) {
   try {
     Blogs.create(newBlog, (error, newBlog) => {
       error === undefined
-        ? res.status(500).json({ message: console.error })
+        ? res.status(200).json({ message: error })
         : res.status(200).json(`${newBlog.title} was posted`);
     });
   } catch (error) {
@@ -35,9 +35,9 @@ exports.getAllBlogs = (req, res) => {
     .exec((error, result) => {
       error !== undefined || error !== "" || error !== null
         ? result.length === 0
-          ? res.status(200).json("No Blogs Found")
+          ? res.status(200).json({ message: "No Blogs Found" })
           : res.status(200).json(result)
-        : res.status(200).json({ message: error });
+        : res.status(500).json({ message: error });
     });
 };
 exports.viewBlogById = function (req, res) {
@@ -47,7 +47,7 @@ exports.viewBlogById = function (req, res) {
     console.log("call", error, result.length);
     error !== undefined || error !== "" || error !== null
       ? result.length === 0
-        ? res.status(200).json(`No Blogs Found with - ${blogId}`)
+        ? res.status(200).json({ message: `No Blogs Found with - ${blogId}` })
         : res.status(200).json(result)
       : res.status(500).json(error);
   };
@@ -61,9 +61,11 @@ exports.viewByAuthor = function (req, res) {
     console.log("call", error, result);
     error !== undefined || error !== "" || error !== null
       ? result.length === 0
-        ? res.status(200).json(`No Blogs Found with - ${authorName}`)
+        ? res
+            .status(200)
+            .json({ message: `No Blogs Found with - ${authorName}` })
         : res.status(200).json(result)
-      : res.status(404).json(error);
+      : res.status(500).json(error);
   };
   console.log("get blog for", authorName);
   Blogs.find({ author: authorName })
@@ -79,14 +81,40 @@ exports.viewByCategory = function (req, res) {
     console.log("call", error, result);
     error !== undefined || error !== "" || error !== null
       ? result.length === 0
-        ? res.status(200).json(`No Blogs Found with - ${categoryName}`)
+        ? res
+            .status(200)
+            .json({ message: `No Blogs Found with - ${categoryName}` })
         : res.status(200).json(result)
-      : res.status(404).json(error);
+      : res.status(500).json(error);
   };
   Blogs.find({ category: categoryName }).select(EXCLUDE).exec(computeResponse);
 };
 exports.editBlog = function (req, res) {
-  res.send("edit blog", req.params);
+  console.log("edit blog", req.params);
+  const { blogId } = req.params;
+  console.log("edit ", blogId);
+  const { title, description, bodyHtml, tags, author, category } = req.body;
+  const updatedBlog = {
+    blogId: blogId,
+    title: title,
+    description: description,
+    bodyHtml: bodyHtml,
+    ispublished: true,
+    tags: tags,
+    author: author,
+    category: category,
+  };
+  computeResponse = (error, { n }) => {
+    console.log("call", error, n);
+    error !== undefined || error !== "" || error !== null
+      ? n === 0
+        ? res.status(200).json({ message: `No Blogs Found with - ${blogId}` })
+        : res.status(200).json(`${n} value updated`)
+      : res.status(500).json(error);
+  };
+  //update
+  let query = { blogId: blogId };
+  Blogs.updateOne(query, { $set: updatedBlog }, computeResponse);
 };
 exports.deleteBlog = function (req, res) {
   res.send("delete blog", req, params);
