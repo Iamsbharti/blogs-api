@@ -5,11 +5,12 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon server",
-    "test": "npm test"
+    "test": "npm test",
+    "docs": "apidoc -i routes/ -o apidoc/"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Iamsbharti/node-test.git"
+    "url": "git+https://github.com/Iamsbharti/blogs-api.git"
   },
   "keywords": [
     "blog"
@@ -17,9 +18,9 @@
   "author": "Saurabh Bharti",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Iamsbharti/node-test/issues"
+    "url": "https://github.com/Iamsbharti/blogs-api.git/issues"
   },
-  "homepage": "https://github.com/Iamsbharti/node-test#readme",
+  "homepage": "https://github.com/Iamsbharti/blogs-api.git#readme",
   "dependencies": {
     "apidoc": "^0.23.0",
     "body-parser": "^1.19.0",
