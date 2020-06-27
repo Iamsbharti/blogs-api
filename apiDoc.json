@@ -3,5 +3,6 @@
   "version": "0.0.1",
   "description": "Documentaion for blog app",
   "title": "Blog APIs",
-  "url": ""
+  "url": "http://localhost:3000"
 }
+//apidoc -i routes/ -o apiDOc/

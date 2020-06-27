@@ -5,8 +5,9 @@ const { formatRes } = require("../lib/formatResponse");
 const { now } = require("../lib/formatTime");
 const Blogs = require("../models/Blog");
 const EXCLUDE = "-__v -_id";
+
 exports.createBlog = function (req, res) {
-  //console.log("create blog", req.body);
+  console.log("create blog", req.body);
   const { title, description, bodyHtml, tags, author, category } = req.body;
   const newBlog = new Blogs({
     blogId: uuidv4(),
@@ -17,11 +18,10 @@ exports.createBlog = function (req, res) {
     tags: tags,
     author: author,
     category: category,
-    created: Date.now,
   });
 
   Blogs.create(newBlog, (error, newBlog) => {
-    error === undefined
+    error !== null
       ? res.status(200).json(formatRes(true, "Internal Error", 500, null))
       : res
           .status(200)
@@ -180,9 +180,9 @@ exports.incrementCount = function (req, res) {
   };
   let query = { blogId: blogId };
   Blogs.findOne({ blogId: blogId }, (error, result) => {
-    //console.log(error, result.blogId, result.views, typeof result.views);
+    console.log(error, result);
     foundBlog = result;
-    error === null && result.blogId === blogId
+    error === null && result !== null && result.blogId === blogId
       ? Blogs.updateOne(
           query,
           { $set: { views: result.views + 1 } },
