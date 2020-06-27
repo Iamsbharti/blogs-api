@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const { v4: uuidv4 } = require("uuid");
 
 const Blogs = require("../models/Blog");
-
+const EXCLUDE = "-__v -_id";
 exports.createBlog = function (req, res) {
   console.log("create blog", req.body);
   const { title, description, bodyHtml, tags, author, category } = req.body;
@@ -30,7 +30,7 @@ exports.createBlog = function (req, res) {
 exports.getAllBlogs = (req, res) => {
   console.log("req getall");
   const blogs = Blogs.find()
-    .select("-__v -_id")
+    .select(EXCLUDE)
     .lean()
     .exec((error, result) => {
       error !== undefined || error !== ""
@@ -51,13 +51,23 @@ exports.viewBlogById = function (req, res) {
       : res.status(500).send(error);
   };
   console.log("get blog for", blogId);
-  const blogById = Blogs.find({ blogId: blogId })
-    .select("-__v -_id")
-    .lean()
-    .exec(computeResponse);
+  Blogs.find({ blogId: blogId }).select(EXCLUDE).lean().exec(computeResponse);
 };
 exports.viewByAuthor = function (req, res) {
-  res.send("view by author", req.params);
+  console.log("view by author", req.params);
+  const authorName = req.params.author;
+  computeResponse = (error, result) => {
+    error !== undefined || error !== ""
+      ? result.length === 0
+        ? res.status(200).send(`No Blogs Found with` - { authorName })
+        : res.status(200).send(result)
+      : res.status(500).send(error);
+  };
+  console.log("get blog for", authorName);
+  Blogs.find({ author: authorName })
+    .select(EXCLUDE)
+    .lean()
+    .exec(computeResponse);
 };
 exports.viewByCategory = function (req, res) {
   res.send("view by category", req, params);
