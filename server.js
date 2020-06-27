@@ -14,8 +14,8 @@ app.get("/", (req, res) => {
 
 //add middleware
 console.log(baseurl);
-app.use(config.baseurl, router);
 app.use(bodyParser.json());
+app.use(config.baseurl, router);
 
 //init db
 init.initdb();

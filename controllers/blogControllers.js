@@ -1,9 +1,31 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const { v4: uuidv4 } = require("uuid");
+
 const Blogs = require("../models/Blog");
 
-exports.createBlog = async (req, res) => {
-  res.send("create blog", req.body);
+exports.createBlog = function (req, res) {
+  console.log("create blog", req.body);
+  const { title, description, bodyHtml, tags, author, category } = req.body;
+  const newBlog = new Blogs({
+    blogId: uuidv4(),
+    title: title,
+    description: description,
+    bodyHtml: bodyHtml,
+    ispublished: true,
+    tags: tags,
+    author: author,
+    category: category,
+  });
+  try {
+    Blogs.create(newBlog, (error, newBlog) => {
+      error === undefined
+        ? res.status(500).json({ message: console.error })
+        : res.status(200).send(`${newBlog.title} was posted`);
+    });
+  } catch (error) {
+    res.status(500).json({ message: error });
+  }
 };
 exports.getAllBlogs = async (req, res) => {
   console.log("req getall");
