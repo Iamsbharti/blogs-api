@@ -21,7 +21,7 @@ exports.createBlog = function (req, res) {
     Blogs.create(newBlog, (error, newBlog) => {
       error === undefined
         ? res.status(500).json({ message: console.error })
-        : res.status(200).send(`${newBlog.title} was posted`);
+        : res.status(200).json(`${newBlog.title} was posted`);
     });
   } catch (error) {
     res.status(500).json({ message: error });
@@ -33,22 +33,23 @@ exports.getAllBlogs = (req, res) => {
     .select(EXCLUDE)
     .lean()
     .exec((error, result) => {
-      error !== undefined || error !== ""
+      error !== undefined || error !== "" || error !== null
         ? result.length === 0
-          ? res.status(200).send("No Blogs Found")
+          ? res.status(200).json("No Blogs Found")
           : res.status(200).json(result)
-        : res.status(200).send({ message: error });
+        : res.status(200).json({ message: error });
     });
 };
 exports.viewBlogById = function (req, res) {
   console.log("viewBlogById");
   const blogId = req.params.blogId;
   computeResponse = (error, result) => {
-    error !== undefined || error !== ""
+    console.log("call", error, result.length);
+    error !== undefined || error !== "" || error !== null
       ? result.length === 0
-        ? res.status(200).send(`No Blogs Found with` - { blogId })
-        : res.status(200).send(result)
-      : res.status(500).send(error);
+        ? res.status(200).json(`No Blogs Found with - ${blogId}`)
+        : res.status(200).json(result)
+      : res.status(500).json(error);
   };
   console.log("get blog for", blogId);
   Blogs.find({ blogId: blogId }).select(EXCLUDE).lean().exec(computeResponse);
@@ -57,11 +58,12 @@ exports.viewByAuthor = function (req, res) {
   console.log("view by author", req.params);
   const authorName = req.params.author;
   computeResponse = (error, result) => {
-    error !== undefined || error !== ""
+    console.log("call", error, result);
+    error !== undefined || error !== "" || error !== null
       ? result.length === 0
-        ? res.status(200).send(`No Blogs Found with` - { authorName })
-        : res.status(200).send(result)
-      : res.status(500).send(error);
+        ? res.status(200).json(`No Blogs Found with - ${authorName}`)
+        : res.status(200).json(result)
+      : res.status(404).json(error);
   };
   console.log("get blog for", authorName);
   Blogs.find({ author: authorName })
