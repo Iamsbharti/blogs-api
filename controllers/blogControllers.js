@@ -27,12 +27,18 @@ exports.createBlog = function (req, res) {
     res.status(500).json({ message: error });
   }
 };
-exports.getAllBlogs = async (req, res) => {
+exports.getAllBlogs = (req, res) => {
   console.log("req getall");
-  const blogs = await Blogs.find();
-  blogs.length === 0
-    ? res.status(200).send("No Blogs Found")
-    : res.status(200).json(blogs);
+  const blogs = Blogs.find()
+    .select("-__v -_id")
+    .lean()
+    .exec((error, result) => {
+      error !== undefined || error !== ""
+        ? result.length === 0
+          ? res.status(200).send("No Blogs Found")
+          : res.status(200).json(result)
+        : res.status(200).send({ message: error });
+    });
 };
 exports.viewBlogById = function (req, res) {
   res.send(req.params);
