@@ -6,6 +6,8 @@ const { baseurl } = require("./app.config");
 require("dotenv");
 const bodyParser = require("body-parser");
 const { globalError, notFound } = require("./middlewares/globalMiddleWares");
+const { logIP } = require("./middlewares/reqestIPMiddleware");
+
 const app = express();
 
 app.get("/", (req, res) => {
@@ -15,8 +17,10 @@ app.get("/", (req, res) => {
 //add middleware
 console.log(baseurl);
 app.use(bodyParser.json());
+app.use(logIP);
 app.use(config.baseurl, router);
 app.use(globalError, notFound);
+
 //init db
 init.initdb();
 
