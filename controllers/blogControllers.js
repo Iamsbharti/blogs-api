@@ -41,7 +41,20 @@ exports.getAllBlogs = (req, res) => {
     });
 };
 exports.viewBlogById = function (req, res) {
-  res.send(req.params);
+  console.log("viewBlogById");
+  const blogId = req.params.blogId;
+  computeResponse = (error, result) => {
+    error !== undefined || error !== ""
+      ? result.length === 0
+        ? res.status(200).send(`No Blogs Found with` - { blogId })
+        : res.status(200).send(result)
+      : res.status(500).send(error);
+  };
+  console.log("get blog for", blogId);
+  const blogById = Blogs.find({ blogId: blogId })
+    .select("-__v -_id")
+    .lean()
+    .exec(computeResponse);
 };
 exports.viewByAuthor = function (req, res) {
   res.send("view by author", req.params);
