@@ -133,5 +133,29 @@ exports.deleteBlog = function (req, res) {
   Blogs.deleteOne({ blogId: blogId }, computeResponse);
 };
 exports.incrementCount = function (req, res) {
-  res.send("count++", req.params);
+  console.log("count++", req.params);
+  const { blogId } = req.params;
+  console.log("increment view", blogId);
+  let foundBlog;
+  //increment view
+  computeResponse = (error, { n }) => {
+    console.log("call", error, n);
+    error === null
+      ? res
+          .status(200)
+          .json({ message: `${n} blog updated`, currentview: foundBlog.views })
+      : res.status(500).json(error);
+  };
+  let query = { blogId: blogId };
+  Blogs.findOne({ blogId: blogId }, (error, result) => {
+    console.log(error, result.blogId, result.views, typeof result.views);
+    foundBlog = result;
+    error === null && result.blogId === blogId
+      ? Blogs.updateOne(
+          query,
+          { $set: { views: result.views + 1 } },
+          computeResponse
+        )
+      : res.status(200).json({ message: `No blogs found-${blogId}` });
+  });
 };

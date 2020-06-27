@@ -11,6 +11,6 @@ router.get("/view/by/category/:category", blogController.viewByCategory);
 router.post("/:blogId/edit", blogController.editBlog);
 router.post("/:blogId/delete", blogController.deleteBlog);
 router.post("/create", blogController.createBlog);
-router.post("/:blogId/count.view", blogController.incrementCount);
+router.post("/:blogId/count/view", blogController.incrementCount);
 
 module.exports = router;
