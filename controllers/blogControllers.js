@@ -33,7 +33,7 @@ exports.getAllBlogs = (req, res) => {
     .select(EXCLUDE)
     .lean()
     .exec((error, result) => {
-      error !== undefined || error !== "" || error !== null
+      error !== null
         ? result.length === 0
           ? res.status(200).json({ message: "No Blogs Found" })
           : res.status(200).json(result)
@@ -45,7 +45,7 @@ exports.viewBlogById = function (req, res) {
   const blogId = req.params.blogId;
   computeResponse = (error, result) => {
     console.log("call", error, result.length);
-    error !== undefined || error !== "" || error !== null
+    error !== null
       ? result.length === 0
         ? res.status(200).json({ message: `No Blogs Found with - ${blogId}` })
         : res.status(200).json(result)
@@ -59,7 +59,7 @@ exports.viewByAuthor = function (req, res) {
   const authorName = req.params.author;
   computeResponse = (error, result) => {
     console.log("call", error, result);
-    error !== undefined || error !== "" || error !== null
+    error !== null
       ? result.length === 0
         ? res
             .status(200)
@@ -79,7 +79,7 @@ exports.viewByCategory = function (req, res) {
   console.log("Get blog for", categoryName);
   computeResponse = (error, result) => {
     console.log("call", error, result);
-    error !== undefined || error !== "" || error !== null
+    error !== null
       ? result.length === 0
         ? res
             .status(200)
@@ -106,7 +106,7 @@ exports.editBlog = function (req, res) {
   };
   computeResponse = (error, { n }) => {
     console.log("call", error, n);
-    error !== undefined || error !== "" || error !== null
+    error !== null
       ? n === 0
         ? res.status(200).json({ message: `No Blogs Found with - ${blogId}` })
         : res.status(200).json(`${n} value updated`)
@@ -117,7 +117,20 @@ exports.editBlog = function (req, res) {
   Blogs.updateOne(query, { $set: updatedBlog }, computeResponse);
 };
 exports.deleteBlog = function (req, res) {
-  res.send("delete blog", req, params);
+  console.log("delete blog", req.params);
+  const { blogId } = req.params;
+  console.log("delete", blogId);
+
+  //delete
+  computeResponse = (error, { n }) => {
+    console.log("call", error, n);
+    error !== null
+      ? n === 0
+        ? res.status(200).json({ message: `No Blogs Found with - ${blogId}` })
+        : res.status(200).json(`${n} blog deleted`)
+      : res.status(500).json(error);
+  };
+  Blogs.deleteOne({ blogId: blogId }, computeResponse);
 };
 exports.incrementCount = function (req, res) {
   res.send("count++", req.params);
