@@ -93,20 +93,11 @@ exports.editBlog = function (req, res) {
   console.log("edit blog", req.params);
   const { blogId } = req.params;
   console.log("edit ", blogId);
-  const { title, description, bodyHtml, tags, author, category } = req.body;
-  const updatedBlog = {
-    blogId: blogId,
-    title: title,
-    description: description,
-    bodyHtml: bodyHtml,
-    ispublished: true,
-    tags: tags,
-    author: author,
-    category: category,
-  };
+
+  const options = req.body;
   computeResponse = (error, { n }) => {
-    console.log("call", error, n);
-    error !== null
+    console.log("call--", error, n);
+    error === null
       ? n === 0
         ? res.status(200).json({ message: `No Blogs Found with - ${blogId}` })
         : res.status(200).json(`${n} value updated`)
@@ -114,7 +105,7 @@ exports.editBlog = function (req, res) {
   };
   //update
   let query = { blogId: blogId };
-  Blogs.updateOne(query, { $set: updatedBlog }, computeResponse);
+  Blogs.updateOne(query, options, computeResponse);
 };
 exports.deleteBlog = function (req, res) {
   console.log("delete blog", req.params);
