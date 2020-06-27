@@ -72,7 +72,18 @@ exports.viewByAuthor = function (req, res) {
     .exec(computeResponse);
 };
 exports.viewByCategory = function (req, res) {
-  res.send("view by category", req, params);
+  console.log("view by category", req.params);
+  const categoryName = req.params.category;
+  console.log("Get blog for", categoryName);
+  computeResponse = (error, result) => {
+    console.log("call", error, result);
+    error !== undefined || error !== "" || error !== null
+      ? result.length === 0
+        ? res.status(200).json(`No Blogs Found with - ${categoryName}`)
+        : res.status(200).json(result)
+      : res.status(404).json(error);
+  };
+  Blogs.find({ category: categoryName }).select(EXCLUDE).exec(computeResponse);
 };
 exports.editBlog = function (req, res) {
   res.send("edit blog", req.params);
