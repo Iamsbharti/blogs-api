@@ -45,4 +45,5 @@ let blogSchema = new schema({
     default: new Date(),
   },
 });
-mongoose.model("Blog", blogSchema);
+
+module.exports = mongoose.model("Blog", blogSchema);

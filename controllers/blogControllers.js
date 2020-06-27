@@ -1,9 +1,16 @@
 const express = require("express");
+const mongoose = require("mongoose");
+const Blogs = require("../models/Blog");
+
 exports.createBlog = function (req, res) {
   res.send("create blog", req.body);
 };
-exports.getAllBlogs = function (req, res) {
-  res.send("get all blogs");
+exports.getAllBlogs = async (req, res) => {
+  console.log("req getall");
+  const blogs = await Blogs.find();
+  blogs.length === 0
+    ? res.status(200).send("No Blogs Found")
+    : res.status(200).json(blogs);
 };
 exports.viewBlogById = function (req, res) {
   res.send(req.params);
