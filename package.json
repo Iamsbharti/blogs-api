@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "description": "blog api",
   "main": "index.js",
+  "homepage": "https://Iamsbharti.github.io/blog-api-doc/index.html",
   "scripts": {
     "start": "nodemon server",
     "test": "npm test",
-    "docs": "apidoc -i routes/ -o apidoc/"
+    "docs": "apidoc -i routes/ -o apidoc/",
+    "deploy": "gh-pages -d apiDoc"
   },
   "repository": {
     "type": "git",
@@ -20,12 +22,12 @@
   "bugs": {
     "url": "https://github.com/Iamsbharti/blogs-api.git/issues"
   },
-  "homepage": "https://github.com/Iamsbharti/blogs-api.git#readme",
   "dependencies": {
     "apidoc": "^0.23.0",
     "body-parser": "^1.19.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "gh-pages": "^3.1.0",
     "moment": "^2.27.0",
     "moment-timezone": "^0.5.31",
     "mongoose": "^5.9.20",
